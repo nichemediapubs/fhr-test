@@ -1,4 +1,3 @@
-!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8" />
@@ -7,8 +6,67 @@
 <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
 <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
 <style>
-	body { margin: 0; padding: 0; }
-	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+body { margin: 0; padding: 0;}
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+.maplibregl-popup {
+max-width: 400px;
+font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+    
+    
+#catselect {
+  position: absolute;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #808080;
+  padding: 12px 112px 12px 12px;
+  left: 20px;
+  border-color: #ffffff;
+  top: 20px;
+  z-index: 98;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
+}
+
+#buttons {
+  position: absolute;
+  left: 20px;
+  top: 80px;
+  z-index: 99;
+  overflow-x: auto;
+  white-space: nowrap;
+  height: 40px;
+  width: 90%;
+}
+
+.btn {
+  border-radius: 32px;
+  font-size: 11px;
+  color: #333333;
+  padding: 8px;
+  border-color: #ffffff;
+  background-color: #ffffff;
+  z-index: 98;
+  border: 0px;
+  font-weight: 600;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.2),0 -1px 0px rgba(0,0,0,0.02);
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  margin-right: 8px;
+  line-height: 40px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+button:disabled,
+button[disabled]{
+  background-color: #cccccc;
+  color: #666666;
+}
 </style>
 </head>
 <body>
@@ -16,10 +74,33 @@
 .maplibregl-popup {
 max-width: 400px;
 font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-}
+}	
 </style>
+	
 <div id="map"></div>
+	
+ <select id="catselect">
+    <option value="start" disabled>Choose a category</option>
+    <option value="all">Showing all categories</option>
+    <option value="pub">Pub</option>
+    <option value="restaurant">Restaurant</option>
+    <option value="vietnamese">Vietnamese</option>
+  </select>
+
+<div id="buttons">
+  <button type="button" class="btn" id="btn0" onclick="buttonClick0()"><span class="dot" style="background-color:#760909"></span>0 – Urgent Improvement Required</button>
+  <button type="button" class="btn" id="btn1" onclick="buttonClick1()"><span class="dot" style="background-color:#FF0000"></span>1 – Major Improvement Necessary</button>
+  <button type="button" class="btn" id="btn2" onclick="buttonClick2()"><span class="dot" style="background-color:#C17B00"></span>2 – Some Improvement Necessary</button>
+  <button type="button" class="btn" id="btn3" onclick="buttonClick3()"><span class="dot" style="background-color:#AE9E00"></span>3 – Generally Satisfactory</button>
+  <button type="button" class="btn" id="btn4" onclick="buttonClick4()"><span class="dot" style="background-color:#70A43D"></span>4 – Good</button>
+  <button type="button" class="btn" id="btn5" onclick="buttonClick5()"><span class="dot" style="background-color:#268200"></span>5 – Very Good</button>
+</div>
+  
+<div id="map"></div>
+
 <script>
+
+		let b0 = true;
 
     var map = new maplibregl.Map({
         container: 'map',
@@ -58,8 +139,37 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
         map.on('mouseleave', 'fhr', function () {
             map.getCanvas().style.cursor = '';
         });
+        
+        // Add geolocate control to the map.
+        map.addControl(
+          new maplibregl.GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true
+            },
+            trackUserLocation: true
+          })
+        );
     });
-</script>
+    
+    // map.setFilter('fhr', ['==', ['get', 'rating'], '0']);
+    
+    function buttonClick0() {
+    
+      if (b0 == true) {
+        map.setFilter('fhr', ['==', ['get', 'rating'], '0']);
+        b0 = false
+        document.getElementById("btn1").disabled = true;
+      } else {
+        map.setFilter('fhr', null);
+        b0 = true;
+        document.getElementById("btn1").disabled = false;
+      }
+    
+    }
+    
+    
+    
+
  
 </body>
 </html>
